@@ -1,0 +1,62 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  annotations:
+    rbac.authorization.kubernetes.io/autoupdate: "true"
+  creationTimestamp: null
+  labels:
+    kubernetes.io/bootstrapping: rbac-defaults
+  name: argo-test
+rules:
+- apiGroups:
+  - '*'
+  resources:
+  - '*'
+  verbs:
+  - '*'
+- nonResourceURLs:
+  - '*'
+  verbs:
+  - '*'
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: cloud-workflow-admin0
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: system:node:192.168.6.109
+    #name: system:node:k8s4-master
+roleRef:
+  kind: ClusterRole
+  name: argo-test
+  apiGroup: rbac.authorization.k8s.io
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: cloud-workflow-admin1
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: system:node:192.168.6.110
+    #name: system:node:k8s4-node1
+roleRef:
+  kind: ClusterRole
+  name: argo-test
+  apiGroup: rbac.authorization.k8s.io
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: cloud-workflow-admin2
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: system:node:192.168.6.111
+    #name: system:node:k8s4-node2
+roleRef:
+  kind: ClusterRole
+  name: argo-test
+  apiGroup: rbac.authorization.k8s.io
