@@ -5,7 +5,7 @@ metadata:
 subjects:
   - apiGroup: rbac.authorization.k8s.io
     kind: User
-    name: system:node:192.168.6.109
+    name: system:node:0.0.0.0
     #name: system:node:k8s4-master
 roleRef:
   kind: ClusterRole
@@ -19,7 +19,7 @@ metadata:
 subjects:
   - apiGroup: rbac.authorization.k8s.io
     kind: User
-    name: system:node:192.168.6.110
+    name: system:node:1.1.1.1
     #name: system:node:k8s4-node1
 roleRef:
   kind: ClusterRole
@@ -33,7 +33,7 @@ metadata:
 subjects:
   - apiGroup: rbac.authorization.k8s.io
     kind: User
-    name: system:node:192.168.6.111
+    name: system:node:2.2.2.2
     #name: system:node:k8s4-node2
 roleRef:
   kind: ClusterRole

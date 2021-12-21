@@ -1,6 +1,112 @@
 apiVersion: v1
 kind: Service
 metadata:
+  name: task-container-builder
+  labels:
+    app: task-container-builder
+spec:
+  selector:
+    app: builder
+  ports:
+    - port: 7070
+      protocol: TCP
+      targetPort: 7070
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: task-container-builder-deploy
+  namespace: default
+  labels:
+    app: grpc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: builder
+  template:
+    metadata:
+      labels:
+        app: builder
+    spec:
+      volumes:
+        - name: log-volume
+          hostPath:
+            path: /home
+        - name: config-volume
+          hostPath:
+            path: /etc/kubernetes
+        - name: current-pem-volume
+          hostPath:
+            path: /etc/kubernetes/ssl
+      #        - name: server-ca-volume
+      #          hostPath:
+      #            path: /etc/etcd/ssl
+      containers:
+        - name: task-container-builder-ctr
+          #image: 192.168.6.90/workflow/resource-allocator:latest
+          image: shanchenggang/task-container-builder:v6.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 7070
+              hostPort: 7070
+          volumeMounts:
+            - name: log-volume
+              mountPath: /home
+            - name: config-volume
+              mountPath: /etc/kubernetes
+            - name: current-pem-volume
+              mountPath: /etc/kubernetes/ssl
+          #            - name: server-ca-volume
+          #              mountPath: /etc/etcd/ssl
+          env:
+            #            - name: ETCD_HOST
+            #              valueFrom:
+            #                configMapKeyRef:
+            #                  name: cluster-info
+            #                  key: etcd.host
+            #            - name: ETCD_PORT
+            #              valueFrom:
+            #                configMapKeyRef:
+            #                  name: cluster-info
+            #                  key: etcd.port
+            - name: MASTER_IP
+              valueFrom:
+                configMapKeyRef:
+                  name: cluster-info
+                  key: master.ip
+            - name: GATHER_TIME
+              valueFrom:
+                configMapKeyRef:
+                  name: cluster-info
+                  key: gather.time
+            - name: NODE_NUM
+              valueFrom:
+                configMapKeyRef:
+                  name: cluster-info
+                  key: node.num
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: grpc
+  name: cluster-info
+  namespace: default
+data:
+  #Please change to your cluster Master address
+  #etcd.host: 192.168.6.109
+  #etcd.port: "2379"
+  #Please change to your cluster Master address
+  master.ip: 0.0.0.0
+  #the number of cluster node
+  node.num: "2"
+  #the time interval of gathering data
+  gather.time: "500"
+---
+apiVersion: v1
+kind: Service
+metadata:
   name: workflow-injector
   labels:
     app: workflow-injector
@@ -32,7 +138,7 @@ spec:
       containers:
         - name: workflow-injector-ctr
           #image: 192.168.6.90/workflow/resource-allocator:latest
-          image: shanchenggang/workflow-injector:v5.0
+          image: shanchenggang/workflow-injector:v6.0
           imagePullPolicy: IfNotPresent
           command: [ "./workflowInjector" ]
           args: [ "3" ]
@@ -194,111 +300,6 @@ data:
           "args": ["-c","1","-m","100","-t","5","-i","3"]
       }
     }
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: task-container-builder
-  labels:
-    app: task-container-builder
-spec:
-  selector:
-    app: builder
-  ports:
-  - port: 7070
-    protocol: TCP
-    targetPort: 7070
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: task-container-builder-deploy
-  namespace: default
-  labels:
-    app: grpc
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: builder
-  template:
-    metadata:
-      labels:
-        app: builder
-    spec:
-      volumes:
-        - name: log-volume
-          hostPath:
-            path: /home
-        - name: config-volume
-          hostPath:
-            path: /etc/kubernetes
-        - name: current-pem-volume
-          hostPath:
-            path: /etc/kubernetes/ssl
-#        - name: server-ca-volume
-#          hostPath:
-#            path: /etc/etcd/ssl
-      containers:
-        - name: task-container-builder-ctr
-          #image: 192.168.6.90/workflow/resource-allocator:latest
-          image: shanchenggang/task-container-builder:v5.0
-          imagePullPolicy: IfNotPresent
-          ports:
-            - containerPort: 7070
-              hostPort: 7070
-          volumeMounts:
-            - name: log-volume
-              mountPath: /home
-            - name: config-volume
-              mountPath: /etc/kubernetes
-            - name: current-pem-volume
-              mountPath: /etc/kubernetes/ssl
-#            - name: server-ca-volume
-#              mountPath: /etc/etcd/ssl
-          env:
-#            - name: ETCD_HOST
-#              valueFrom:
-#                configMapKeyRef:
-#                  name: cluster-info
-#                  key: etcd.host
-#            - name: ETCD_PORT
-#              valueFrom:
-#                configMapKeyRef:
-#                  name: cluster-info
-#                  key: etcd.port
-            - name: MASTER_IP
-              valueFrom:
-                configMapKeyRef:
-                  name: cluster-info
-                  key: master.ip
-            - name: GATHER_TIME
-              valueFrom:
-                configMapKeyRef:
-                  name: cluster-info
-                  key: gather.time
-            - name: NODE_NUM
-              valueFrom:
-                configMapKeyRef:
-                  name: cluster-info
-                  key: node.num
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  labels:
-    app: grpc
-  name: cluster-info
-  namespace: default
-data:
-  #Please change to your cluster Master address
-  #etcd.host: 192.168.6.109
-  #etcd.port: "2379"
-  #Please change to your cluster Master address
-  master.ip: 192.168.6.109
-  #the number of cluster node
-  node.num: "2"
-  #the time interval of gathering data
-  gather.time: "500"
+
 
 

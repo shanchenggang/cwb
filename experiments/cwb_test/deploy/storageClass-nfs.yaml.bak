@@ -89,7 +89,7 @@ spec:
         - name: nfs-client-provisioner
           image: shanchenggang/nfs-client-provisioner:latest
           imagePullPolicy: IfNotPresent
-          #image: harbor.cloudcontrolsystems.cn/tools/nfs-client-provisioner:v2.0.0
+          #imagePullPolicy: Never
           volumeMounts:
             - name: nfs-client-root
               mountPath: /persistentvolumes
@@ -98,13 +98,13 @@ spec:
               #这个值是定义storage里面的那个值
               value: fuseim.pri/ifs
             - name: NFS_SERVER
-              value: 192.168.6.109
+              value: 0.0.0.0
             - name: NFS_PATH
               value: /nfsdata
       volumes:
         - name: nfs-client-root
           nfs:
-            server: 192.168.6.109
+            server: 0.0.0.0
             path: /nfsdata
 
 
