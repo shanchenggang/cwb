@@ -23,7 +23,7 @@ Master: 192.168.6.109, node1: 192.168.6.110, node2: 192.168.6.111
 
 OS version: CentOS Linux release 7.8/Ubuntu 20.4, Kubernetes: v1.18.6/v1.19.6, Docker: 18.09.6.
 
-1. ./experiment/cwb_test
+#### ./experiment/cwb_test
 
 The directory './deploy' includes the Yaml files corresponding to CWB, RBAC, resource usage rate, NFS, and workflow injection module.
 
