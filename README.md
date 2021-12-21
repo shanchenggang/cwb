@@ -27,6 +27,7 @@ OS version: CentOS Linux release 7.8/Ubuntu 20.4, Kubernetes: v1.18.6/v1.19.6, D
 
 The directory './deploy' includes the Yaml files corresponding to CWB, RBAC, resource usage rate, NFS, and workflow injection module.
 We use the Configmap method in the Yaml file to inject workflow information (dependency.json) into the container of workflow injection module.
+
 Refer to './deploy/task-dag7.yaml' for details.
 
 steps:
@@ -38,11 +39,8 @@ Update the 'ipNode.txt' in line with your test cluster.
 ##### b. ./deploy.sh
 
 Deploy CWB into the K8s cluster. The './deploy/edit.sh' file firstly captures the Master's IP, 
-
 updates the other corresponding files. Then it copies 'task-dag*.yaml.bak' to 'workflowInjector-Builder.yaml'.
-
 The 'deploy.sh' file includes a series of 'Kubectl' commands.
-
 During the workflow lifecycle, you can watch the execution states of workflow tasks. The following is the operation command.
 
 'kubectl get pods -A --watch -o wide'
