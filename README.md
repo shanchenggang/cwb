@@ -19,7 +19,7 @@ Firstly, you need to update the `ipNode.txt` in line with your test cluster.
 Here, our experimental environment consists of one Master and two nodes. 
 In the K8s cluster, the node name is identified by the node's IP.
 
-Master: 192.168.6.109, node1: 192.168.6.110, node2: 192.168.6.111
+`Master: 192.168.6.109, node1: 192.168.6.110, node2: 192.168.6.111`
 
 #### Software Prerequisites
 
@@ -35,21 +35,21 @@ Refer to `./deploy/task-dag7.yaml` for details.
 
 **steps:**
 
-* update the K8s nodes' ip.
+* Update the K8s nodes' ip.
 
   Update the `ipNode.txt` in line with your test cluster.
 
-* ./deploy.sh
+* Run `./deploy.sh`
 
    Deploy CWB into the K8s cluster. The `./deploy/edit.sh` file firstly captures the Master's IP, 
 updates the other corresponding files. Then it copies `task-dag*.yaml.bak` to `workflowInjector-Builder.yaml`.
 The `deploy.sh` file includes a series of `Kubectl` commands.
 During the workflow lifecycle, you can watch the execution states of workflow tasks. The following is the operation command.
 
-```console
-kubectl get pods -A --watch -o wide
-```
-* ./clear.sh
+  ```console
+  kubectl get pods -A --watch -o wide
+  ```
+* Run `./clear.sh`
 
   When the workflow is completed, you can run `.clear.sh` file to clean up the workflow information and obtain the log files. 
 
